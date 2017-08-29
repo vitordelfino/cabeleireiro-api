@@ -12,11 +12,10 @@ module.exports = function(app) {
             if(erro){
                 console.log('Não foi possível fazer login ' + erro);
                 res.status(500).send(erro);
+                connection.end();
                 return;
             }
             console.log('login realizado');
-            connection.end();
-
             var connection = app.persistencia.connectionFactory();
             var cliente = new app.persistencia.ClienteDao(connection);
             
@@ -29,16 +28,18 @@ module.exports = function(app) {
                     }
 
                         res.status(200).send({login: login, cliente: resultado[0]});
+                        connection.end();
 
                 });
             }else{
                 res.status(404).send({mensagem: "Usuário ou senha inválidos"});
+                connection.end();
+                
             }
 
 
         });
 
-        connection.end();
 
     });
 
