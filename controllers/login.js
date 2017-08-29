@@ -1,7 +1,7 @@
 module.exports = function(app) {
 
     app.post('/login/logar', function(req, res) {
-        
+
         var login =  req.body;
 
         var connection = app.persistencia.connectionFactory();
@@ -15,7 +15,10 @@ module.exports = function(app) {
                 return;
             }
             console.log('login realizado');
+            connection.end();
 
+            var connection = app.persistencia.connectionFactory();
+            var cliente = new app.persistencia.ClienteDao(connection);
             if(resultado.length == 1){
                 cliente.buscaPorId(login.usuario, function(erro, resultado){
                     if(erro){
@@ -23,15 +26,15 @@ module.exports = function(app) {
                         res.status(500).send(erro);
                         return;
                     }
-                    
+
                         res.status(200).send({login: login, cliente: resultado[0]});
-                    
+
                 });
             }else{
                 res.status(404).send({mensagem: "Usuário ou senha inválidos"});
             }
-            
-            
+
+
         });
 
         connection.end();
@@ -39,9 +42,9 @@ module.exports = function(app) {
     });
 
     app.put('/login/update', function(req, res) {
-        
+
         var novoLogin = req.body;
-        
+
 
         pagamento.id = id;
         pagamento.status = 'CONFIRMADO';
