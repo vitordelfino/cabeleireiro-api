@@ -33,23 +33,12 @@ module.exports = function(app){
                             res.status(500).send(erro);
                         }else{
                             console.log('cliente cadastrado');
-
-                            clienteDao.criaLogin(login, function(erro, resposta){
-                                if(erro){
-                                    console.log('erro ao salvar cliente no banco +' + erro);
-                                    res.status(500).send(erro);
-                                }else{
-                                    res.location('/cliente/salvar/' + resultado.insertId);
-                                    res.status(201).json(cliente);
-                                }
-                            });
-
-                            
+                            res.location('/cliente/salvar/' + resultado.insertId);
+                            res.status(201).json(cliente);                            
                         }
-                    });   
-                    connection.end();      
+                    });
+                    connection.end();
                 }
-                
             });
 
     });
