@@ -1,0 +1,19 @@
+{
+  "name": "cabeleireiro-api",
+  "version": "1.0.0",
+  "description": "Projeto para tópicos especiais - Fatec carapiduiba",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "vitor delfino",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "consign": "^0.1.6",
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "express-validator": "^3.2.1",
+    "mysql": "^2.14.1"
+  }
+}
