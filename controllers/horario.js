@@ -12,9 +12,11 @@ module.exports = function(app) {
                 console.log(erro);
                 res.status(500).send(erro);
             }else{
-                res.status(200).send(resposta)
+                res.status(200).send(resposta);
             }
         });
+
+        connection.end();
 
     });    
 

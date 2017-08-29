@@ -32,7 +32,9 @@ module.exports = function(app) {
             }
             
             
-        })
+        });
+
+        connection.end();
 
     });
 
@@ -56,5 +58,7 @@ module.exports = function(app) {
             console.log('pagamento confirmado ' + pagamento);
             res.send(pagamento);
         });
+
+        connection.end();
     });
 }
