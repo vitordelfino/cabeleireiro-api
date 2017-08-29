@@ -19,6 +19,7 @@ module.exports = function(app) {
 
             var connection = app.persistencia.connectionFactory();
             var cliente = new app.persistencia.ClienteDao(connection);
+            
             if(resultado.length == 1){
                 cliente.buscaPorId(login.usuario, function(erro, resultado){
                     if(erro){
