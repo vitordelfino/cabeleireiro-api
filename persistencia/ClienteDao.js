@@ -6,6 +6,8 @@ ClienteDao.prototype.salva = function(cliente, callback) {
     this._connection.query('INSERT INTO cliente SET ?', cliente, callback);
 }
 
+ClienteDao.prototype.criaLogin = (login, callback) => this._connection.query('INSERT INTO login SET ?', login, callback);
+
 ClienteDao.prototype.atualiza = function(pagamento, callback) {
     this._connection.query('UPDATE pagamentos SET status = ? where id = ?', [pagamento.status, pagamento.id], callback);
 }
