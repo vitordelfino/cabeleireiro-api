@@ -2,21 +2,47 @@ module.exports = function(app) {
 
     app.post('/horario/disponivel', function(req, res){
 
-        var dt = req.body;
+        const dt = req.body;
         console.log(dt.dt_agendamento.toString());
-        var connection = app.persistencia.connectionFactory();
-        var horarioDao = new app.persistencia.HorarioDao(connection);
 
-        horarioDao.findDisponivel(dt, function(erro, resposta){
-            if(erro){
-                console.log(erro);
-                res.status(500).send(erro);
+        const memcachedClient = app.servicos.memcachedClient();
+        memcachedClient.get(dt.dt_agendamento.toString(), (erro, retorno) => {
+            if(erro || !retorno){
+                console.log('MISS - chave não encontrada');
+
+                const connection = app.persistencia.connectionFactory();
+                const horarioDao = new app.persistencia.HorarioDao(connection);
+
+                horarioDao.findDisponivel(dt, function(erro, resposta){
+                    if(erro){
+                        console.log(erro);
+                        res.status(500).send(erro);
+                    }else{
+
+                        memcachedClient.set(dt.dt_agendamento.toString(), resposta, 60000, erro => {
+                            if(erro){
+                                console.log('set: '+ erro);
+                            }else{
+                                console.log('nova chave adicionada ao cache: ' + dt.dt_agendamento.toString())
+                            }
+                        });
+
+                        res.status(200).send(resposta);
+                    }
+                });
+
+                connection.end();
+
+
             }else{
-                res.status(200).send(resposta);
+                console.log('HIT - chave encontrada: ' + JSON.stringify(retorno));
+                res.status(200).send(retorno);
             }
         });
 
-        connection.end();
+
+
+
 
     });    
 

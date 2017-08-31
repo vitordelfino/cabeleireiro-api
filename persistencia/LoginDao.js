@@ -7,7 +7,7 @@ LoginDao.prototype.find = function(login, callback){
 }
 
 LoginDao.prototype.find2 = function(login, callback){
-    this._connection.query('SELECT * FROM login l, cliente c where usuario = ? AND senha = ? and l.usuario = cliente.cpf', [login.usuario, login.senha], callback);
+    this._connection.query('SELECT * FROM login , cliente  where login.usuario = ? AND login.senha = ? and login.usuario = cliente.cpf', [login.usuario, login.senha], callback);
 }
 
 module.exports = function() {

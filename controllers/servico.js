@@ -1,20 +1,36 @@
 module.exports = function(app){
 
   app.get('/servicos/find', (req, res)=>{
-    console.log('buscando servicos no banco');
-    var connection = app.persistencia.connectionFactory();
-    var servicosDao = new app.persistencia.ServicosDao(connection);
-    
-    servicosDao.list((erro, resultado)=>{
-      if(erro){
-        console.log(erro);
-        res.status(500).send(erro);
-        return;
-      }
-      console.log(resultado);
-      res.status(200).send(resultado);
-    });
-    connection.end();
-  });
 
+      const mencached = app.servicos.memcachedClient();
+      mencached.get('servicos', (erro, retorno) => {
+
+      if(erro || !retorno){
+
+          console.log('MISS - chave não encontrada');
+
+          const connection = app.persistencia.connectionFactory();
+          const servicosDao = new app.persistencia.ServicosDao(connection);
+
+          servicosDao.list((erro, resultado)=>{
+              if(erro){
+                  console.log(erro);
+                  res.status(500).send(erro);
+                  return;
+              }
+              mencached.set('servicos', resultado, 60000, erro => {
+                 if(!erro)
+                     console.log('chave adiocionada: servicos');
+              });
+              res.status(200).send(resultado);
+          });
+          connection.end();
+
+      }else{
+          console.log('HIT - chave encontrada');
+          res.status(200).send(retorno);
+      }
+
+    });
+  });
 }

@@ -1,56 +1,65 @@
 module.exports = function(app) {
 
     app.post('/login/logar', function(req, res) {
-      
-        req.assert("usuario", "usuario deve ser preenchido").notEmpty().len(11,11);
-        req.assert("senha", "senha deve ser preenchida").notEmpty();
-      
-        req.getValidationResult(resultado => {
-            const erros = result.useFirstErrorOnly().array();
-            if(erros){
-              console.log('erros no body da requisicao  ' + erros);
-              res.status(400).send(erros);
-              return;
-            }
-        })
 
-        var login =  req.body;
+        const login =  req.body;
 
-        var connection = app.persistencia.connectionFactory();
-        var loginDao = new app.persistencia.LoginDao(connection);
-        var cliente = new app.persistencia.ClienteDao(connection);
+        const memcached = app.servicos.memcachedClient();
+        memcached.get(`${login.usuario}-${login.senha}`, (erro, retorno) => {
 
-        loginDao.find(login, function(erro, resultado){
-            if(erro){
-                console.log('Não foi possível fazer login ' + erro);
-                res.status(500).send(erro);
-                connection.end();
-                return;
-            }
-            console.log('login realizado');
-            var connection = app.persistencia.connectionFactory();
-            var cliente = new app.persistencia.ClienteDao(connection);
-            
-            if(resultado.length == 1){
-                cliente.buscaPorId(login.usuario, function(erro, resultado){
+            if(erro || !retorno){
+                console.log('MISS - chave não encontrada');
+
+                const connection = app.persistencia.connectionFactory();
+                const loginDao = new app.persistencia.LoginDao(connection);
+
+                loginDao.find2(login, function(erro, resultado){
                     if(erro){
                         console.log('Não foi possível fazer login ' + erro);
                         res.status(500).send(erro);
+                        connection.end();
                         return;
                     }
 
-                        res.status(200).send({login: login, cliente: resultado[0]});
+                    if(resultado.length > 0){
+                        console.log(resultado);
+                        user = {
+                            "login": {
+                                "usuario": resultado[0].usuario,
+                                "senha": resultado[0].senha
+                            },
+                            "cliente": {
+                                "cpf": resultado[0].cpf,
+                                "nome": resultado[0].nome
+                            }
+                        }
+
+                        memcached.set(`${login.usuario}-${login.senha}`, user, 6000, erro => {
+                           if(erro){
+                               console.log(erro);
+                           }else{
+                               console.log(`chave adicionada: ${login.usuario}-${login.senha}`);
+                           }
+                        });
+                        res.status(200).send(user);
                         connection.end();
+                    }else{
+                        res.status(404).send({mensagem: "Usuário ou senha inválidos"});
+                        connection.end();
+                    }
+
 
                 });
+
             }else{
-                res.status(404).send({mensagem: "Usuário ou senha inválidos"});
-                connection.end();
-                
+                console.log('HIT - chave encontrada: ' + JSON.stringify(retorno));
+                res.status(200).send(retorno);
             }
+        })
 
 
-        });
+
+
 
 
     });
