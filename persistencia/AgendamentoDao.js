@@ -18,6 +18,10 @@ class AgendamentoDao {
   findByClientId(id, callback){
     this._connection.query('SELECT * FROM agendamento WHERE clinte = ?', [id], callback);
   }
+  
+  delete(id, callback){
+    this._connection.query('DELETE FROM agendamento WHERE id = ?', [id], callback);
+  }
 }
 
 module.exports = () => AgendamentoDao;

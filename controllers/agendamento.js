@@ -17,7 +17,7 @@ module.exports = function(app){
      connection.end();
    });
   
-  app.get('agendamento/find/id/:id', (req, res) => {
+  app.get('agendamento/id/:id', (req, res) => {
     const id = req.params.id;
     const connection = app.persistensia.connectionFactory();
     const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
@@ -33,7 +33,7 @@ module.exports = function(app){
     connection.end();
   });
   
-  app.get('agendamento/find/clientid/:id', (req, res) => {
+  app.get('agendamento/clientid/:id', (req, res) => {
     const id = req.params.id;
     const connection = app.persistensia.connectionFactory();
     const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
@@ -49,7 +49,7 @@ module.exports = function(app){
     connection.end();
   });
   
-  app.post('agendamento/salva', (req, res) => {
+  app.post('agendamento', (req, res) => {
     
     req.assert("cpf", "cpf não pode ser nulo e deve conter 11 dígitos").notEmpty().len(11,11);
     req.assert("data_agendamento", "data do agendamento não pode ser nulo").notEmpty();
@@ -79,4 +79,24 @@ module.exports = function(app){
     });
     connection.end();
   });
+  
+  app.delete('agendamento/:id', (req, res) => {
+    
+    const id = req.params.id;
+    
+    const connection = app.persistensia.connectionFactory();
+    const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
+    
+    agendamentoDao.delete(id, (erro, resultado) => {
+      if(erro){
+        console.log('Erro ao deletar agendamento' + erro);
+        res.status(500).send(erro);
+        return
+      }
+      res.status(200).send(resposta);
+    });
+    connection.end();
+  })
+  
+  
 }
