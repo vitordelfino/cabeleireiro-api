@@ -1,6 +1,18 @@
 module.exports = function(app) {
 
     app.post('/login/logar', function(req, res) {
+      
+        req.assert("usuario", "usuario deve ser preenchido").notEmpty().len(11,11);
+        req.assert("senha", "senha deve ser preenchida").notEmpty();
+      
+        req.getValidationResult(resultado => {
+            const erros = result.useFirstErrorOnly().array();
+            if(erros){
+              console.log('erros no body da requisicao  ' + erros);
+              res.status(400).send(erros);
+              return;
+            }
+        })
 
         var login =  req.body;
 

@@ -51,6 +51,20 @@ module.exports = function(app){
   
   app.post('agendamento/salva', (req, res) => {
     
+    req.assert("cpf", "cpf não pode ser nulo e deve conter 11 dígitos").notEmpty().len(11,11);
+    req.assert("data_agendamento", "data do agendamento não pode ser nulo").notEmpty();
+    req.assert("servico", "servico não pode ser nulo").notEmpty();
+    req.assert("horario", "horario não pode ser nulo").notEmpty();
+    
+    req.getValidationResult().then(result => {
+      const erros = result.useFirstErrorOnly().array();
+      if(erros){
+        console.log('erros no body da requisicao  ' + erros);
+        res.status(400).send(erros);
+        return;
+      }
+    })
+    
     const agendamento = req.body;    
     const connection = app.persistensia.connectionFactory();
     const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
