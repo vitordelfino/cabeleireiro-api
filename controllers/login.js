@@ -4,7 +4,7 @@ module.exports = function(app) {
 
         const login =  req.body;
 
-        /*const memcached = app.servicos.memcachedClient();
+        const memcached = app.servicos.memcachedClient();
         memcached.get(`${login.usuario}-${login.senha}`, (erro, retorno) => {
 
             if(erro || !retorno){
@@ -55,50 +55,7 @@ module.exports = function(app) {
                 console.log('HIT - chave encontrada: ' + JSON.stringify(retorno));
                 res.status(200).send(retorno);
             }
-        });*/
-        
-        const connection = app.persistencia.connectionFactory();
-        const loginDao = new app.persistencia.LoginDao(connection);
-
-        loginDao.find2(login, function(erro, resultado){
-            if(erro){
-                console.log('Não foi possível fazer login ' + erro);
-                res.status(500).send(erro);
-                connection.end();
-                return;
-            }
-
-            if(resultado.length > 0){
-                console.log(resultado);
-                user = {
-                    "login": {
-                        "usuario": resultado[0].usuario,
-                        "senha": resultado[0].senha
-                    },
-                    "cliente": {
-                        "cpf": resultado[0].cpf,
-                        "nome": resultado[0].nome
-                    }
-                }
-
-                /*memcached.set(`${login.usuario}-${login.senha}`, user, 6000, erro => {
-                   if(erro){
-                       console.log(erro);
-                   }else{
-                       console.log(`chave adicionada: ${login.usuario}-${login.senha}`);
-                   }
-                });*/
-                res.status(200).send(user);
-                connection.end();
-            }else{
-                res.status(404).send({mensagem: "Usuário ou senha inválidos"});
-                connection.end();
-            }
-
-
-
-
-
+        });
     });
 
     app.put('/login/update', function(req, res) {
