@@ -65,9 +65,9 @@ module.exports = function(app){
       }
     })*/
     
-    const agendamento = req.body;    
-    const connection = app.persistensia.connectionFactory();
-    const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
+    const agendamento = req.body;
+    const connection = app.persistencia.connectionFactory();
+    const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
     
     agendamentoDao.salva(agendamento, (erro, resposta) => {
       if(erro) {
