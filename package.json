@@ -16,6 +16,7 @@
     "express": "^4.15.4",
     "express-validator": "^3.2.1",
     "memcached": "^2.2.2",
+    "memjs": "^1.0.0-rc.1",
     "mysql": "^2.14.1"
   }
 }

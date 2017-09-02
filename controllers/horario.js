@@ -6,20 +6,20 @@ module.exports = function(app) {
         console.log(dt.dt_agendamento.toString());
 
         const memcachedClient = app.servicos.memcachedClient();
-        memcachedClient.get(dt.dt_agendamento.toString(), (erro, retorno) => {
+        memcachedClient.get(dt.dt_agendamento.toString(), (erro, retorno, key) => {
             if(erro || !retorno){
                 console.log('MISS - chave não encontrada');
 
                 const connection = app.persistencia.connectionFactory();
                 const horarioDao = new app.persistencia.HorarioDao(connection);
 
-                horarioDao.findDisponivel(dt, function(erro, resposta){
+                horarioDao.findDisponivel(dt, function(erro, resposta, key){
                     if(erro){
                         console.log(erro);
                         res.status(500).send(erro);
                     }else{
 
-                        memcachedClient.set(dt.dt_agendamento.toString(), resposta, 60000, erro => {
+                        memcachedClient.set(dt.dt_agendamento.toString(), resposta, {expires:60000}, (erro,val) => {
                             if(erro){
                                 console.log('set: '+ erro);
                             }else{

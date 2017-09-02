@@ -5,7 +5,7 @@ module.exports = function(app) {
         const login =  req.body;
 
         const memcached = app.servicos.memcachedClient();
-        memcached.get(`${login.usuario}-${login.senha}`, (erro, retorno) => {
+        memcached.get(`${login.usuario}-${login.senha}`, (erro, retorno, key) => {
 
             if(erro || !retorno){
                 console.log('MISS - chave não encontrada');
@@ -34,7 +34,7 @@ module.exports = function(app) {
                             }
                         }
 
-                        memcached.set(`${login.usuario}-${login.senha}`, user, 6000, erro => {
+                        memcached.set(`${login.usuario}-${login.senha}`, user, {expires:60000}, (erro,val) => {
                            if(erro){
                                console.log(erro);
                            }else{

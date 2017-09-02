@@ -3,7 +3,7 @@ module.exports = function(app){
   app.get('/servicos/find', (req, res)=>{
 
       const mencached = app.servicos.memcachedClient();
-      mencached.get('servicos', (erro, retorno) => {
+      mencached.get('servicos', (erro, retorno, key) => {
 
       if(erro || !retorno){
 
@@ -18,7 +18,7 @@ module.exports = function(app){
                   res.status(500).send(erro);
                   return;
               }
-              mencached.set('servicos', resultado, 60000, erro => {
+              mencached.set('servicos', resultado, {expires:60000}, (erro,val) => {
                  if(!erro)
                      console.log('chave adiocionada: servicos');
               });
