@@ -76,7 +76,7 @@ module.exports = function(app){
         return;
       }
       const memcachedClient = app.servicos.memcachedClient();
-      memcachedClient.delete(agenndamento.dt_agendamento, erro =>{
+      memcachedClient.delete(agendamento.dt_agendamento, erro =>{
         if(!erro)
           console.log('DELETE - chave deletada');
       });
