@@ -74,7 +74,12 @@ module.exports = function(app){
         console.log(erro);
         res.status(500).send(erro);
         return;
-      }     
+      }
+      const memcachedClient = app.servicos.memcachedClient();
+      memcachedClient.delete(agenndamento.dt_agendamento, erro =>{
+        if(!erro)
+          console.log('DELETE - chave deletada');
+      });
       res.status(200).send(resposta);     
     });
     connection.end();
@@ -93,6 +98,7 @@ module.exports = function(app){
         res.status(500).send(erro);
         return
       }
+
       res.status(200).send(resposta);
     });
     connection.end();
