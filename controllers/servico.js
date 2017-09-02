@@ -18,7 +18,7 @@ module.exports = function(app){
                   res.status(500).send(erro);
                   return;
               }
-              mencached.set('servicos', resultado, {expires:60000}, (erro,val) => {
+              mencached.set('servicos', JSON.stringify(resultado), {expires:60000}, (erro,val) => {
                  if(!erro)
                      console.log('chave adiocionada: servicos');
               });
@@ -28,7 +28,7 @@ module.exports = function(app){
 
       }else{
           console.log('HIT - chave encontrada');
-          res.status(200).send(retorno);
+          res.status(200).send(JSON.parse(retorno));
       }
 
     });

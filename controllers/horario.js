@@ -19,7 +19,7 @@ module.exports = function(app) {
                         res.status(500).send(erro);
                     }else{
 
-                        memcachedClient.set(dt.dt_agendamento.toString(), resposta, {expires:60000}, (erro,val) => {
+                        memcachedClient.set(dt.dt_agendamento.toString(), JSON.stringify(resposta), {expires:60000}, (erro,val) => {
                             if(erro){
                                 console.log('set: '+ erro);
                             }else{
@@ -36,7 +36,7 @@ module.exports = function(app) {
 
             }else{
                 console.log('HIT - chave encontrada: ' + JSON.stringify(retorno));
-                res.status(200).send(retorno);
+                res.status(200).send(JSON.parse(retorno));
             }
         });
 

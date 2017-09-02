@@ -34,7 +34,7 @@ module.exports = function(app) {
                             }
                         }
 
-                        memcached.set(`${login.usuario}-${login.senha}`, user, {expires:60000}, (erro,val) => {
+                        memcached.set(`${login.usuario}-${login.senha}`, JSON.stringify(user), {expires:60000}, (erro,val) => {
                            if(erro){
                                console.log(erro);
                            }else{
@@ -53,7 +53,7 @@ module.exports = function(app) {
 
             }else{
                 console.log('HIT - chave encontrada: ' + JSON.stringify(retorno));
-                res.status(200).send(retorno);
+                res.status(200).send(JSON.parse(retorno));
             }
         });
     });
