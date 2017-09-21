@@ -35,7 +35,7 @@ module.exports = function(app) {
 
 
             }else{
-                console.log('HIT - chave encontrada: ' + JSON.stringify(retorno));
+                console.log('HIT - chave encontrada ');
                 res.status(200).send(JSON.parse(retorno));
             }
         });

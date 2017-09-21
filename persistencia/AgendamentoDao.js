@@ -4,7 +4,7 @@ class AgendamentoDao {
   }
   
   list(callback) {
-    this._connection.query('SELECT * FROM agendamento', callback);
+    this._connection.query('SELECT * FROM agendamento ', callback);
   }
   
   salva(agendamento, callback){
@@ -16,7 +16,9 @@ class AgendamentoDao {
   }
   
   findByClientId(id, callback){
-    this._connection.query('SELECT * FROM agendamento WHERE clinte = ?', [id], callback);
+    this._connection.query(
+        `select a.id, a.dt_agendamento, s.descricao as servico, h.horario, c.nome, date_format(a.dt_agendamento, '%d-%m-%Y') as str_data from agendamento a, servico s, horarios h, cliente c 
+          where c.cpf = a.cliente and s.id = a.servico and h.id = a.hr_agendamento and a.cliente = ? order by a.id desc`, [id], callback);
   }
   
   delete(id, callback){
