@@ -22,7 +22,11 @@ class AgendamentoDao {
   }
   
   delete(id, callback){
-    this._connection.query('DELETE FROM agendamento WHERE id = ?', [id], callback);
+    this._connection.query('UPDATE agendamento set status = 2 WHERE id = ?', [id], callback);
+  }
+
+  finaliza(id, callback){
+    this._connection.query('UPDATE agendamento set status = 3 WHERE id = ?', [id], callback);
   }
 }
 
