@@ -103,11 +103,11 @@ class AgendamentoDao {
   }
 
   delete(id, callback){
-    this._connection.query('UPDATE agendamento set status = 2 WHERE id = ?', [id], callback);
+    this._connection.query('UPDATE agendamento set status = 11 WHERE id = ?', [id], callback);
   }
 
   finaliza(id, callback){
-    this._connection.query('UPDATE agendamento set status = 3 WHERE id = ?', [id], callback);
+    this._connection.query('UPDATE agendamento set status = 21 WHERE id = ?', [id], callback);
   }
 }
 
