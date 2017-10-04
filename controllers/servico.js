@@ -5,7 +5,7 @@ module.exports = function(app){
       const mencached = app.servicos.memcachedClient();
       mencached.get('servicos', (erro, retorno, key) => {
 
-      if(erro || !retorno){
+      if(erro || !retorno || retorno.length < 1){
 
           console.log('MISS - chave não encontrada');
 
