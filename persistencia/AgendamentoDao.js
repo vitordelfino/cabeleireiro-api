@@ -4,7 +4,30 @@ class AgendamentoDao {
   }
 
   list(callback) {
-    this._connection.query('SELECT * FROM agendamento ', callback);
+    this._connection.query(
+      `select
+
+       a.id,
+       a.dt_agendamento,
+       s.descricao as servico,
+       h.horario,
+       c.nome,
+       date_format(a.dt_agendamento, '%d-%m-%Y') as str_data,
+       st.descricao as status,
+       a.observacao
+
+        from
+          agendamento a,
+          servico s,
+          horarios h,
+          cliente c,
+          status st
+
+          where
+            c.cpf = a.cliente and
+            s.id = a.servico and
+            h.id = a.hr_agendamento and
+            a.status = st.id order by a.dt_agendamento desc, h.id asc`, callback);
   }
 
   salva(agendamento, callback){
@@ -103,11 +126,11 @@ class AgendamentoDao {
   }
 
   delete(id, callback){
-    this._connection.query('UPDATE agendamento set status = 11 WHERE id = ?', [id], callback);
+    this._connection.query('UPDATE agendamento set status = 2 WHERE id = ?', [id], callback);
   }
 
   finaliza(id, callback){
-    this._connection.query('UPDATE agendamento set status = 21 WHERE id = ?', [id], callback);
+    this._connection.query('UPDATE agendamento set status = 3 WHERE id = ?', [id], callback);
   }
 }
 

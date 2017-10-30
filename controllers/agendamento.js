@@ -2,8 +2,8 @@ module.exports = function(app){
 
    app.get('/agendamento/list', (req, res) => {
 
-     const connection = app.persistensia.connectionFactory();
-     const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
+     const connection = app.persistencia.connectionFactory();
+     const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
 
      agendamentoDao.list((erro, resultado) => {
        if(erro){
@@ -87,7 +87,7 @@ module.exports = function(app){
     const connection = app.persistencia.connectionFactory();
     const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
 
-    agendamento.status = 1;
+    agendamento.status = 31;
 
     agendamentoDao.salva(agendamento, (erro, resposta) => {
       if(erro) {

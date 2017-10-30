@@ -6,3 +6,6 @@ insert into status
 
 insert into status
 (descricao) values ('Finalizado');
+
+insert into status
+(descricao) values ('Pendente');
