@@ -125,12 +125,16 @@ class AgendamentoDao {
               a.cliente = ? order by a.dt_agendamento desc, h.id asc`, [id], callback);
   }
 
-  delete(id, callback){
-    this._connection.query('UPDATE agendamento set status = 2 WHERE id = ?', [id], callback);
+  delete(id, obs, callback){
+    this._connection.query('UPDATE agendamento set status = 2 ans observacao = ? WHERE id = ?', [obs,id], callback);
   }
 
   finaliza(id, callback){
     this._connection.query('UPDATE agendamento set status = 3 WHERE id = ?', [id], callback);
+  }
+
+  confirma(id, callback){
+    this._connection.query('UPDATE agendamento set status = 1 WHERE id = ?', [id], callback);
   }
 }
 

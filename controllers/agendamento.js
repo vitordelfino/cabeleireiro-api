@@ -87,7 +87,7 @@ module.exports = function(app){
     const connection = app.persistencia.connectionFactory();
     const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
 
-    agendamento.status = 31;
+    agendamento.status = 4;
 
     agendamentoDao.salva(agendamento, (erro, resposta) => {
       if(erro) {
@@ -101,16 +101,42 @@ module.exports = function(app){
           console.log('DELETE - chave deletada');
       });
       res.location('/pagamentos/' + resposta.insertId);
+      app.get('io').emit('novoAgendamento',resposta);
       res.status(200).send(resposta);
     });
     connection.end();
   });
 
-  app.put('/agendamento/:id', (req, res) => {
+
+  app.put('/agendamento/confirma/:id', (req, res) => {
 
     const id = req.params.id;
-    const connection = app.persistensia.connectionFactory();
-    const agendamentoDao = new app.persistensia.AgendamentoDao(connection);
+    const connection = app.persistencia.connectionFactory();
+    const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
+
+    let agendamento = {};
+    agendamento.id = id;
+    agendamento.status = 'Confirmado';
+
+    console.log('confirmando agendamento');
+    console.log(agendamento);
+
+    agendamentoDao.confirma(id, (erro) => {
+      if(erro){
+        console.log(`Erro ao confirmar agendamento: ${erro}`);
+        res.status(500).send(erro);
+        return;
+      }
+      console.log(`agendamento confirmado: ${agendamento}`);
+      res.send(agendamento);
+    });
+  });
+
+  app.put('/agendamento/finaliza/:id', (req, res) => {
+
+    const id = req.params.id;
+    const connection = app.persistencia.connectionFactory();
+    const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
 
     let agendamento = {};
     agendamento.id = id;
@@ -119,24 +145,23 @@ module.exports = function(app){
 
     agendamentoDao.finaliza(id, (erro) => {
       if(erro){
-        console.log(`Erro ao atualizar agendamento: ${erro}`);
+        console.log(`Erro ao finalizar agendamento: ${erro}`);
         res.status(500).send(erro);
         return;
       }
-      console.log(`agendament finalizado: ${agendamento}`);
+      console.log(`agendamento finalizado: ${agendamento}`);
       res.send(agendamento);
     });
-
-
   });
 
-  app.delete('/agendamento/:id', (req, res) => {
+  app.delete('/agendamento/:id/:obs', (req, res) => {
 
     const id = req.params.id;
+    const obs = req.params.obs
     const connection = app.persistencia.connectionFactory();
     const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
 
-    agendamentoDao.delete(id, (erro) => {
+    agendamentoDao.delete(id,obs, (erro) => {
       if(erro){
         console.log('Erro ao deletar agendamento' + erro);
         res.status(500).send(erro);
