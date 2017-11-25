@@ -128,6 +128,7 @@ module.exports = function(app){
         return;
       }
       console.log(`agendamento confirmado: ${agendamento}`);
+      app.get('io').emit('novoAgendamento',agendamento);
       res.send(agendamento);
     });
   });
@@ -150,6 +151,7 @@ module.exports = function(app){
         return;
       }
       console.log(`agendamento finalizado: ${agendamento}`);
+      app.get('io').emit('novoAgendamento',agendamento);
       res.send(agendamento);
     });
   });
@@ -158,6 +160,10 @@ module.exports = function(app){
 
     const id = req.params.id;
     const obs = req.params.obs
+
+    console.log(id + '    ' + obs);
+
+
     const connection = app.persistencia.connectionFactory();
     const agendamentoDao = new app.persistencia.AgendamentoDao(connection);
 
@@ -168,6 +174,7 @@ module.exports = function(app){
         return;
       }
       console.log('Cancelado');
+      app.get('io').emit('novoAgendamento',{});
       res.status(204).send('Cancelado');
     });
     connection.end();

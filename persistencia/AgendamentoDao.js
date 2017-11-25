@@ -126,7 +126,7 @@ class AgendamentoDao {
   }
 
   delete(id, obs, callback){
-    this._connection.query('UPDATE agendamento set status = 2 ans observacao = ? WHERE id = ?', [obs,id], callback);
+    this._connection.query('UPDATE agendamento set status = 2, observacao = ? WHERE id = ?', [obs,id], callback);
   }
 
   finaliza(id, callback){
